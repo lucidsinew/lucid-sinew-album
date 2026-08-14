@@ -39,25 +39,27 @@
         width: 80px; height: 24px; background-color: rgba(245, 240, 220, 0.9); box-shadow: 0 1px 2px rgba(0,0,0,0.05); z-index: 2;
     }
     
-    /* 淡淡的倾斜水印 - 小图 */
+/* 淡淡的倾斜水印 - 小图 */
     .watermark { position: relative; overflow: hidden; }
     .watermark::after {
         content: "DEMO PHOTO";
         position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg);
-        color: rgba(255, 255, 255, 0.75); font-family: 'Inter', sans-serif;
+        color: rgba(255, 255, 255, 0.5); /* 透明度降至 50% */
+        font-family: 'Inter', sans-serif;
         font-size: 1.1rem; font-weight: 800; letter-spacing: 0.1em;
         text-align: center; pointer-events: none; white-space: nowrap;
-        text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.15); /* 降低了投影，显得更轻透 */
     }
 
     /* 淡淡的倾斜水印 - 大图(灯箱) */
     #lightbox-watermark {
         content: "DEMO PHOTO";
         position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-20deg);
-        color: rgba(255, 255, 255, 0.6); font-family: 'Inter', sans-serif;
+        color: rgba(255, 255, 255, 0.4); /* 放大后的水印面积更大，透明度降到 40% 观感更好 */
+        font-family: 'Inter', sans-serif;
         font-size: 10vw; max-font-size: 4rem; font-weight: 900; letter-spacing: 0.2em;
         text-align: center; pointer-events: none; white-space: nowrap;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        text-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
 
     .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; }
