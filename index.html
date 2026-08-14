@@ -274,7 +274,6 @@
         let stopTimeout = null;
 
         function toggleMusic() {
-            // 清除之前的定时器，防止冲突
             if (fadeInterval) clearInterval(fadeInterval);
             if (stopTimeout) clearTimeout(stopTimeout);
 
@@ -288,10 +287,10 @@
                 musicText.innerText = 'Playing';
                 musicIcon.classList.add('spin-icon');
 
-                // 播放 17 秒后开始渐隐（总共 20 秒：17秒播放 + 3秒淡出）
+                // 总时长 40 秒：前 35 秒正常播放，后 5 秒开始渐隐淡出
                 stopTimeout = setTimeout(() => {
                     startFadeOut();
-                }, 17000);
+                }, 35000);
 
             }).catch(e => {
                 console.log("Audio play error:", e);
@@ -299,7 +298,7 @@
         }
 
         function startFadeOut() {
-            let fadeSteps = 30; // 渐隐步数
+            let fadeSteps = 50; // 50步平滑过渡
             let currentStep = 0;
             let initialVolume = music.volume;
 
@@ -311,7 +310,7 @@
                     clearInterval(fadeInterval);
                     stopMusic();
                 }
-            }, 100); // 每 100 毫秒降一次音量
+            }, 100); // 每 100 毫秒降一次音量（50 * 100ms = 5秒完全淡出）
         }
 
         function stopMusic() {
