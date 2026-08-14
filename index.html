@@ -21,6 +21,14 @@
         overflow: hidden;
     }
 
+    /* 相册单页结构：强制垂直居中 */
+    .album-page { 
+        display: none; animation: fadeIn 0.4s ease; 
+        flex: 1; width: 100%; flex-direction: column; justify-content: center; align-items: center; 
+    }
+    .album-page.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
     /* 相框样式 */
     .polaroid { background: white; padding: 10px 10px 32px 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.3s ease; }
     .polaroid:active { transform: scale(0.98); }
@@ -54,25 +62,21 @@
 
     .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-    .album-page { display: none; animation: fadeIn 0.4s ease; }
-    .album-page.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .decor-line-art { position: absolute; opacity: 0.15; pointer-events: none; }
 </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
-    <!-- 全局页面顶部专属名称 (悬浮在书本外) -->
-    <div class="w-full max-w-md text-center mb-3 z-10">
+    <!-- 全局页面顶部专属名称 (加大了底部间距 mb-8) -->
+    <div class="w-full max-w-md text-center mb-8 z-10">
         <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase">❤ My Love Oliver ❤</h3>
     </div>
 
     <!-- 主相册容器 -->
     <div class="w-full max-w-md book-container rounded-md flex flex-col p-6 z-10 border border-stone-200/50">
         
-        <!-- Page 1: 封面 (第1张照片) -->
-        <div id="page-1" class="album-page active flex-col items-center justify-center text-center h-full">
+        <!-- Page 1: 封面 -->
+        <div id="page-1" class="album-page active text-center relative">
             <svg class="decor-line-art top-4 left-4 w-12 h-12 text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 0v8m0 0l-3-3m3 3l3-3"></path></svg>
             <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-md mb-8 watermark cursor-pointer transition-transform hover:scale-105" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
                 <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover">
@@ -83,40 +87,37 @@
             <p class="font-serif italic text-stone-500 text-sm leading-relaxed">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
         </div>
 
-        <!-- Page 2: 双小图错落 (第2、3张照片) -->
-        <div id="page-2" class="album-page flex-col h-full relative py-2">
-            <h2 class="font-script text-3xl text-emerald-800/70 text-center mt-2 mb-2 transform -rotate-2">Our precious little man...</h2>
-            <div class="flex flex-col flex-grow justify-around items-center w-full mt-2">
+        <!-- Page 2: 双小图 -->
+        <div id="page-2" class="album-page relative">
+            <h2 class="font-script text-3xl text-emerald-800/70 text-center mb-8 transform -rotate-2">Our precious little man...</h2>
+            <div class="flex flex-col w-full px-2">
                 <div class="polaroid transform -rotate-3 self-start ml-2" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">You are the love of our family</p>
                 </div>
-                <svg class="decor-line-art w-8 h-8 text-stone-800 transform rotate-12 self-end mr-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM9 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM17.5 10a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 10a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM12 20a4.5 4.5 0 01-4.5-4.5c0-2 1.5-4.5 4.5-4.5s4.5 2.5 4.5 4.5A4.5 4.5 0 0112 20z"></path></svg>
-                <div class="polaroid transform rotate-4 self-end mr-2 -mt-4 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
+                <div class="polaroid transform rotate-4 self-end mr-2 -mt-8 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
                     <div class="watermark w-40 h-28"><img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Forever loved</p>
                 </div>
             </div>
         </div>
 
-        <!-- Page 3: 单大图 (第4张照片) -->
-        <div id="page-3" class="album-page flex-col h-full items-center py-2 relative">
-            <div class="flex-grow flex flex-col justify-center items-center w-full">
-                <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Always in our hearts</h2>
-                <div class="taped transform -rotate-1 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
-                    <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
-                </div>
-                <svg class="decor-line-art bottom-6 right-6 w-12 h-12 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 22V10m0 0l3-3m-3 3l-3-3m3 3l5-5m-5 5l-5-5"></path></svg>
+        <!-- Page 3: 单大图 -->
+        <div id="page-3" class="album-page relative">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-10 text-center">Always in our hearts</h2>
+            <div class="taped transform -rotate-1 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
+                <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
             </div>
+            <svg class="decor-line-art bottom-2 right-2 w-12 h-12 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 22V10m0 0l3-3m-3 3l-3-3m3 3l5-5m-5 5l-5-5"></path></svg>
         </div>
 
-        <!-- Page 4: 双小图错落 (第5、6张照片) -->
-        <div id="page-4" class="album-page flex-col h-full relative py-2">
-            <div class="flex flex-col flex-grow justify-around items-center w-full mt-2">
+        <!-- Page 4: 双小图 -->
+        <div id="page-4" class="album-page relative">
+            <div class="flex flex-col w-full px-2">
                 <div class="taped transform rotate-2 self-end mr-2" onclick="openLightbox('https://images.unsplash.com/photo-1552053831-71594a27632d')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                 </div>
-                <h2 class="font-script text-3xl text-amber-900/60 text-center transform -rotate-3 z-0 my-2">Endless love and<br>sweet memories...</h2>
+                <h2 class="font-script text-3xl text-amber-900/60 text-center transform -rotate-3 z-0 my-6">Endless love and<br>sweet memories...</h2>
                 <div class="polaroid transform -rotate-4 self-start ml-2 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1501820488136-72669149e0d4')">
                     <div class="watermark w-40 h-28"><img src="https://images.unsplash.com/photo-1501820488136-72669149e0d4?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Deeply missed</p>
@@ -124,49 +125,45 @@
             </div>
         </div>
 
-        <!-- Page 5: 单大图 (第7张照片) -->
-        <div id="page-5" class="album-page flex-col h-full items-center py-2 relative">
-            <div class="flex-grow flex flex-col justify-center items-center w-full">
-                <svg class="decor-line-art top-10 right-4 w-10 h-10 text-stone-800 transform rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
-                <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">A lifetime of love</h2>
-                <div class="taped transform rotate-1 z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24')">
-                    <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
-                </div>
+        <!-- Page 5: 单大图 -->
+        <div id="page-5" class="album-page relative">
+            <svg class="decor-line-art top-2 right-2 w-10 h-10 text-stone-800 transform rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+            <h2 class="font-serif italic text-xl text-stone-400 mb-10 text-center">A lifetime of love</h2>
+            <div class="taped transform rotate-1 z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24')">
+                <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
             </div>
         </div>
 
-        <!-- Page 6: 双小图错落 (第8、9张照片) -->
-        <div id="page-6" class="album-page flex-col h-full relative py-2">
-            <h2 class="font-script text-3xl text-emerald-800/70 text-center mt-2 mb-2 transform rotate-2">Our little angel...</h2>
-            <div class="flex flex-col flex-grow justify-around items-center w-full mt-2">
+        <!-- Page 6: 双小图 -->
+        <div id="page-6" class="album-page relative">
+            <h2 class="font-script text-3xl text-emerald-800/70 text-center mb-8 transform rotate-2">Our little angel...</h2>
+            <div class="flex flex-col w-full px-2">
                 <div class="polaroid transform rotate-3 self-start ml-4" onclick="openLightbox('https://images.unsplash.com/photo-1529429617124-95b109e86bb8')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1529429617124-95b109e86bb8?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Pure joy</p>
                 </div>
-                <div class="polaroid transform -rotate-4 self-end mr-4 -mt-4 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1548247416-ec66f4900b2e')">
+                <div class="polaroid transform -rotate-4 self-end mr-4 -mt-6 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1548247416-ec66f4900b2e')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1548247416-ec66f4900b2e?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Unconditional love</p>
                 </div>
             </div>
         </div>
 
-        <!-- Page 7: 单大图 (第10张照片) -->
-        <div id="page-7" class="album-page flex-col h-full items-center py-2 relative">
-            <div class="flex-grow flex flex-col justify-center items-center w-full">
-                <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Treasured moments</h2>
-                <div class="taped transform -rotate-2 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1558788353-f76d92427f16')">
-                    <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
-                </div>
+        <!-- Page 7: 单大图 -->
+        <div id="page-7" class="album-page relative">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-10 text-center">Treasured moments</h2>
+            <div class="taped transform -rotate-2 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1558788353-f76d92427f16')">
+                <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1558788353-f76d92427f16?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
             </div>
         </div>
 
-        <!-- Page 8: 双小图错落 (第11、12张照片) -->
-        <div id="page-8" class="album-page flex-col h-full relative py-2">
-            <div class="flex flex-col flex-grow justify-around items-center w-full mt-2">
+        <!-- Page 8: 双小图 -->
+        <div id="page-8" class="album-page relative">
+            <div class="flex flex-col w-full px-2">
                 <div class="taped transform -rotate-2 self-start ml-2" onclick="openLightbox('https://images.unsplash.com/photo-1560807707-8cc77767d783')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                 </div>
-                <h2 class="font-script text-3xl text-amber-900/60 text-center transform rotate-3 z-0 my-2">You brought us<br>so much happiness</h2>
+                <h2 class="font-script text-3xl text-amber-900/60 text-center transform rotate-3 z-0 my-6">You brought us<br>so much happiness</h2>
                 <div class="polaroid transform rotate-4 self-end mr-2 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1574158622682-e40e69881006')">
                     <div class="watermark w-40 h-28"><img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Loyal companion</p>
@@ -174,25 +171,23 @@
             </div>
         </div>
 
-        <!-- Page 9: 单大图 (第13张照片) -->
-        <div id="page-9" class="album-page flex-col h-full items-center py-2 relative">
-            <div class="flex-grow flex flex-col justify-center items-center w-full">
-                <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Paw prints on our hearts</h2>
-                <div class="taped transform rotate-1 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1583337130417-3346a1be7dee')">
-                    <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
-                </div>
+        <!-- Page 9: 单大图 -->
+        <div id="page-9" class="album-page relative">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-10 text-center">Paw prints on our hearts</h2>
+            <div class="taped transform rotate-1 relative z-10 w-full max-w-[280px]" onclick="openLightbox('https://images.unsplash.com/photo-1583337130417-3346a1be7dee')">
+                <div class="watermark w-full h-56"><img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover"></div>
             </div>
         </div>
 
-        <!-- Page 10: 双小图错落 (第14、15张照片) -->
-        <div id="page-10" class="album-page flex-col h-full relative py-2">
-            <h2 class="font-script text-3xl text-emerald-800/70 text-center mt-2 mb-2 transform -rotate-1">Until we meet again...</h2>
-            <div class="flex flex-col flex-grow justify-around items-center w-full mt-2">
+        <!-- Page 10: 双小图 -->
+        <div id="page-10" class="album-page relative">
+            <h2 class="font-script text-3xl text-emerald-800/70 text-center mb-8 transform -rotate-1">Until we meet again...</h2>
+            <div class="flex flex-col w-full px-2">
                 <div class="polaroid transform rotate-3 self-end mr-4" onclick="openLightbox('https://images.unsplash.com/photo-1517423440428-a5a00ad493e8')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Always with us</p>
                 </div>
-                <div class="polaroid transform -rotate-4 self-start ml-4 -mt-2 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1522276498395-f4f68f7f8454')">
+                <div class="polaroid transform -rotate-4 self-start ml-4 -mt-6 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1522276498395-f4f68f7f8454')">
                     <div class="watermark w-36 h-28"><img src="https://images.unsplash.com/photo-1522276498395-f4f68f7f8454?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover"></div>
                     <p class="font-script text-lg text-center mt-2 text-stone-600">Our shining star</p>
                 </div>
@@ -200,8 +195,8 @@
         </div>
 
         <!-- Page 11: 结尾视频与分享 -->
-        <div id="page-11" class="album-page flex-col justify-center items-center py-4">
-            <h2 class="font-script text-4xl text-stone-600 text-center mb-6">Forever in our hearts</h2>
+        <div id="page-11" class="album-page relative">
+            <h2 class="font-script text-4xl text-stone-600 text-center mb-8">Forever in our hearts</h2>
             <div class="w-full video-container shadow-md border-4 border-white mb-10">
                 <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
             </div>
@@ -228,7 +223,7 @@
         </button>
     </div>
 
-    <!-- 带有浮水印的灯箱遮罩层 -->
+    <!-- 灯箱 -->
     <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity" onclick="closeLightbox()">
         <button class="absolute top-6 right-6 text-white z-50"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         <div class="relative inline-block" onclick="event.stopPropagation()">
