@@ -71,8 +71,8 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
-    <!-- 背景音乐音频源 -->
-    <audio id="bgMusic" loop preload="auto" src="https://ia800300.us.archive.org/15/items/BeethovenMoonlightSonata-1stMovement/MoonlightSonata.mp3"></audio>
+    <!-- 更稳定的公开 CDN 音频源 -->
+    <audio id="bgMusic" loop preload="auto" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=gentle-piano-110603.mp3"></audio>
 
     <!-- 全局页面顶部专属名称与响应式音乐开关 -->
     <div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
@@ -254,7 +254,7 @@
             document.getElementById('btn-prev').disabled = currentPage === 1;
             document.getElementById('btn-next').style.visibility = currentPage === totalPages ? 'hidden' : 'visible';
             
-            // 核心新增：如果翻页到了最后一页（视频页），自动关闭背景音乐并重置按钮状态
+            // 翻到最后一页（视频页）时，自动静默关闭音乐
             if (currentPage === totalPages && isPlaying) {
                 music.pause();
                 musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
@@ -283,18 +283,19 @@
                 musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
                 musicText.innerText = 'Music';
                 musicIcon.classList.remove('spin-icon');
+                isPlaying = false;
             } else {
                 music.play().then(() => {
                     musicBtn.classList.remove('bg-white/80', 'text-stone-600', 'border-stone-200/80');
                     musicBtn.classList.add('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
                     musicText.innerText = 'Playing';
                     musicIcon.classList.add('spin-icon');
+                    isPlaying = true;
                 }).catch(e => {
-                    console.log("Audio play error:", e);
-                    alert("Unable to play music. Please check your network or try clicking again.");
+                    console.log("Audio play blocked or loading:", e);
+                    // 移除烦人的 alert，静默处理以保持高端体验
                 });
             }
-            isPlaying = !isPlaying;
         }
 
         function shareMemorial() {
