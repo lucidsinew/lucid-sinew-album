@@ -68,9 +68,35 @@
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
     <!-- 全局页面顶部专属名称 (完美居中) -->
-    <div class="w-full max-w-md text-center mb-6 z-10">
-        <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase">❤ My Love Oliver ❤</h3>
-    </div>
+<div class="w-full max-w-md text-center mb-6 z-10">
+    <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase">
+        ❤ My Love Oliver ❤
+    </h3>
+</div>
+    <!-- 顶部标题 -->
+<div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
+
+    <div class="w-16"></div>
+
+    <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase text-center flex-grow">
+        ❤ My Love Oliver ❤
+    </h3>
+
+
+    <button 
+    onclick="toggleMusic()" 
+    id="music-btn"
+    class="text-[11px] font-serif px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 transition-all duration-300 bg-white/80 text-stone-600 border border-stone-200/80">
+
+        <span id="music-icon">♫</span>
+
+        <span id="music-text">
+        Music
+        </span>
+
+    </button>
+
+</div>
 
     <!-- 主相册容器 -->
     <div class="w-full max-w-md book-container rounded-md flex flex-col p-6 z-10 border border-stone-200/50">
@@ -236,42 +262,167 @@
         let currentPage = 1;
         const totalPages = 11;
 
-        function updatePagination() {
-            document.querySelectorAll('.album-page').forEach(page => page.classList.remove('active'));
-            document.getElementById(`page-${currentPage}`).classList.add('active');
-            document.getElementById('page-indicator').innerText = currentPage;
-            document.getElementById('btn-prev').disabled = currentPage === 1;
-            document.getElementById('btn-next').style.visibility = currentPage === totalPages ? 'hidden' : 'visible';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+      // =====================
+// Memory Music System
+// =====================
 
-        function nextPage() { if (currentPage < totalPages) { currentPage++; updatePagination(); } }
-        function prevPage() { if (currentPage > 1) { currentPage--; updatePagination(); } }
 
-        function shareMemorial() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Oliver\'s Memorial Archive',
-                    text: 'A little book of all the moments we shared.',
-                    url: window.location.href 
-                }).catch(console.error);
-            } else {
-                alert("Please copy the website link from your browser to share with family.");
-            }
-        }
+let audioContext = null;
+let musicPlaying = false;
+let musicTimer = null;
 
-        function openLightbox(src) {
-            document.getElementById('lightbox-img').src = src;
-            document.getElementById('lightbox').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-        function closeLightbox() {
-            document.getElementById('lightbox').classList.add('hidden');
-            document.body.style.overflow = 'auto';
-            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
-        }
-        
-        updatePagination();
-    </script>
-</body>
-</html>
+
+function toggleMusic(){
+
+    const btn =
+    document.getElementById("music-btn");
+
+    const text =
+    document.getElementById("music-text");
+
+    const icon =
+    document.getElementById("music-icon");
+
+
+    if(musicPlaying){
+
+        stopMemoryMusic();
+
+        text.innerText="Music";
+        icon.classList.remove("spin-icon");
+
+        btn.classList.remove(
+        "bg-amber-900",
+        "text-white"
+        );
+
+        return;
+    }
+
+
+    playMemoryMusic();
+
+
+    text.innerText="Playing";
+    icon.classList.add("spin-icon");
+
+
+    btn.classList.add(
+    "bg-amber-900",
+    "text-white"
+    );
+
+}
+
+
+
+function playMemoryMusic(){
+
+
+    audioContext =
+    new (window.AudioContext ||
+    window.webkitAudioContext)();
+
+
+    const notes=[
+        261.63,
+        329.63,
+        392,
+        523.25
+    ];
+
+
+    let start =
+    audioContext.currentTime;
+
+
+
+    notes.forEach((freq,i)=>{
+
+
+        let osc =
+        audioContext.createOscillator();
+
+
+        let gain =
+        audioContext.createGain();
+
+
+
+        osc.type="sine";
+
+        osc.frequency.value=freq;
+
+
+        gain.gain.setValueAtTime(
+        0,
+        start+i*3
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+        0.12,
+        start+i*3+0.3
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+        0,
+        start+i*3+2.8
+        );
+
+
+        osc.connect(gain);
+
+        gain.connect(
+        audioContext.destination
+        );
+
+
+        osc.start(start+i*3);
+
+        osc.stop(start+i*3+3);
+
+
+    });
+
+
+
+    musicPlaying=true;
+
+
+
+    musicTimer=setTimeout(()=>{
+
+        stopMemoryMusic();
+
+        document.getElementById(
+        "music-text"
+        ).innerText="Music";
+
+
+    },20000);
+
+
+
+}
+
+
+
+function stopMemoryMusic(){
+
+    if(audioContext){
+
+        audioContext.close();
+
+        audioContext=null;
+
+    }
+
+
+    clearTimeout(musicTimer);
+
+    musicPlaying=false;
+
+
+}
