@@ -2,172 +2,218 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Pet Memorial Album - Lucid Sinew</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
-    body { background-color: #f4f1ea; font-family: 'Inter', sans-serif; color: #4a4a4a; }
+    body { background-color: #f4f1ea; font-family: 'Inter', sans-serif; color: #4a4a4a; overflow-x: hidden; }
     .font-serif { font-family: 'Playfair Display', serif; }
     .font-script { font-family: 'Caveat', cursive; }
     
+    /* 核心书本容器，适配手机屏幕 */
     .book-container {
         background-color: #fdfcf9;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
         background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+        min-height: 75vh;
+        position: relative;
+        overflow: hidden;
     }
     
-    .spine {
-        background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.02) 100%);
-    }
-    
+    /* 照片样式定义 */
     .polaroid {
         background: white;
-        padding: 12px 12px 48px 12px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        padding: 10px 10px 36px 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         cursor: pointer;
+        transition: transform 0.3s ease;
     }
-    .polaroid:hover { transform: scale(1.03) rotate(0deg) !important; z-index: 20; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+    .polaroid:active { transform: scale(0.98); }
     
     .taped {
         position: relative;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        padding: 6px;
     }
-    .taped:hover { transform: scale(1.03) rotate(0deg) !important; z-index: 20; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
     .taped::before {
         content: '';
         position: absolute;
-        top: -12px; left: 50%; transform: translateX(-50%) rotate(-2deg);
-        width: 90px; height: 28px;
-        background-color: rgba(245, 240, 220, 0.85);
+        top: -10px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+        width: 80px; height: 24px;
+        background-color: rgba(245, 240, 220, 0.9);
         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         z-index: 2;
     }
     
-    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
-    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0.25rem; }
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+    /* 翻页逻辑控制 */
+    .album-page { display: none; animation: fadeIn 0.5s ease; }
+    .album-page.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
-<body class="min-h-screen py-10 px-4 sm:px-8">
-    
-    <!-- SPREAD 1 (Cover & First Photos) -->
-    <div class="max-w-5xl mx-auto book-container rounded-sm relative flex flex-col md:flex-row overflow-hidden">
-        <!-- Mobile Separator -->
-        <div class="md:hidden w-full h-1 bg-stone-200"></div>
-        <!-- Center Spine -->
-        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-10 -ml-5 spine z-0"></div>
+<body class="min-h-screen flex flex-col items-center pb-24 pt-4 sm:pt-10 px-4">
 
-        <!-- COVER PAGE (Left Page) -->
-        <div class="w-full md:w-1/2 p-10 sm:p-16 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-stone-200/60 z-10">
-            <div class="w-56 h-56 rounded-full overflow-hidden border-4 border-white shadow-lg mb-8 cursor-pointer transition-transform hover:scale-105" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
-                <!-- Cover Pet Image -->
-                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80" alt="Pet Cover" class="w-full h-full object-cover">
+    <!-- 主相册区域 -->
+    <div class="w-full max-w-md book-container rounded-md flex flex-col justify-center p-8 z-10 border border-stone-200/50">
+        
+        <!-- Page 1: 封面 -->
+        <div id="page-1" class="album-page active flex-col items-center justify-center text-center">
+            <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-md mb-8" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
+                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover">
             </div>
-            <!-- Pet Name -->
-            <h1 class="font-script text-7xl text-amber-900 mb-2">Oliver</h1>
-            <p class="font-serif text-xs uppercase tracking-[0.3em] text-stone-400 mb-6">In Loving Memory</p>
-            
-            <div class="text-center opacity-75 mt-4">
-                <svg class="w-6 h-6 mx-auto text-amber-800/30 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <p class="font-serif italic text-stone-500 text-sm">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
-            </div>
+            <h1 class="font-script text-6xl text-amber-900 mb-2">Oliver</h1>
+            <p class="font-serif text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-6">In Loving Memory</p>
+            <svg class="w-6 h-6 mx-auto text-amber-800/30 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <p class="font-serif italic text-stone-500 text-sm">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
         </div>
 
-        <!-- RIGHT PAGE (First Memory) -->
-        <div class="w-full md:w-1/2 p-10 sm:p-16 z-10 relative flex flex-col">
-            <h2 class="font-script text-4xl text-emerald-800/70 mb-12 transform -rotate-2">Little Man...</h2>
+        <!-- Page 2: 两张小照片错落 -->
+        <div id="page-2" class="album-page flex-col h-full relative py-6">
+            <h2 class="font-script text-4xl text-emerald-800/70 mb-4 transform -rotate-2">Little Man...</h2>
             
-            <div class="relative flex-grow">
-                <!-- Photo 1 (Polaroid) -->
-                <div class="absolute top-0 left-0 w-48 sm:w-56 polaroid transform -rotate-3" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
-                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=500&q=80" alt="Memory 1" class="w-full h-40 sm:h-48 object-cover">
-                    <p class="font-script text-2xl text-center mt-3 text-stone-600">The day you came home</p>
+            <div class="relative w-full h-80 mt-4">
+                <div class="absolute top-0 left-0 w-44 polaroid transform -rotate-3 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
+                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">The day you came home</p>
                 </div>
                 
-                <!-- Photo 2 (Taped) -->
-                <div class="absolute bottom-10 right-0 w-40 sm:w-48 taped transform rotate-4" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
-                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" alt="Memory 2" class="w-full h-40 object-cover border-4 border-white">
-                    <p class="font-script text-2xl text-amber-800/60 absolute -bottom-8 -right-4 transform -rotate-6">Muddy paws</p>
+                <div class="absolute bottom-0 right-0 w-40 polaroid transform rotate-4 z-20" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">Muddy paws</p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- SPREAD 2 (More Memories & Video) -->
-    <div class="max-w-5xl mx-auto book-container rounded-sm relative flex flex-col md:flex-row overflow-hidden mt-8">
-        <div class="md:hidden w-full h-1 bg-stone-200"></div>
-        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-10 -ml-5 spine z-0"></div>
-
-        <!-- LEFT PAGE -->
-        <div class="w-full md:w-1/2 p-10 sm:p-16 z-10 border-b md:border-b-0 md:border-r border-stone-200/60">
-            <h2 class="font-serif italic text-2xl text-stone-400 mb-8 text-center">Baby, I'm amazed</h2>
-            
-            <!-- Photo 3 (Full bleed taped) -->
-            <div class="w-full taped transform -rotate-1 mb-10" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
-                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80" alt="Memory 3" class="w-full h-56 object-cover border-8 border-white">
-            </div>
-            
-            <div class="flex justify-between items-center px-2">
-                <!-- Photo 4 (Small Polaroid) -->
-                <div class="w-32 polaroid transform rotate-3" onclick="openLightbox('https://images.unsplash.com/photo-1552053831-71594a27632d')">
-                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=300&q=80" alt="Memory 4" class="w-full h-24 object-cover">
-                </div>
-                <p class="font-script text-4xl text-amber-900/60 transform -rotate-6 pr-4">Sunbeam naps</p>
+        <!-- Page 3: 一张大图特写 -->
+        <div id="page-3" class="album-page flex-col h-full justify-center items-center py-6">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Baby, I'm amazed</h2>
+            <div class="w-full taped transform -rotate-1" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80" class="w-full h-64 object-cover">
             </div>
         </div>
 
-        <!-- RIGHT PAGE (Final Video) -->
-        <div class="w-full md:w-1/2 p-10 sm:p-16 flex flex-col justify-center z-10">
-            <h2 class="font-script text-5xl text-stone-600 text-center mb-10">Forever in our hearts</h2>
+        <!-- Page 4: 另外两张小照片错落 -->
+        <div id="page-4" class="album-page flex-col h-full relative py-6">
+            <div class="relative w-full h-80 mt-4">
+                <div class="absolute top-4 right-0 w-40 taped transform rotate-2 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1552053831-71594a27632d')">
+                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
+                </div>
+                <h2 class="absolute top-40 left-2 font-script text-3xl text-amber-900/60 transform -rotate-6 z-0">Sunbeam naps...</h2>
+                
+                <div class="absolute bottom-0 left-4 w-44 polaroid transform -rotate-4 z-20" onclick="openLightbox('https://images.unsplash.com/photo-1537151608804-ea6f117f7396')">
+                    <img src="https://images.unsplash.com/photo-1537151608804-ea6f117f7396?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">Your favorite toy</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page 5: 第二张大图特写 -->
+        <div id="page-5" class="album-page flex-col h-full justify-center items-center py-6">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Always by my side</h2>
+            <div class="w-full taped transform rotate-1" onclick="openLightbox('https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24')">
+                <img src="https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24?auto=format&fit=crop&w=600&q=80" class="w-full h-64 object-cover">
+            </div>
+        </div>
+
+        <!-- Page 6: 结尾视频与分享 -->
+        <div id="page-6" class="album-page flex-col justify-center items-center py-6">
+            <h2 class="font-script text-4xl text-stone-600 text-center mb-8">Forever in our hearts</h2>
             
-            <!-- Video Player (Replace dQw4w9WgXcQ with your video ID) -->
-            <div class="video-container shadow-xl bg-stone-900 rounded border-8 border-white transform rotate-1">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" title="Memorial Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="w-full video-container shadow-md border-4 border-white mb-8">
+                <!-- 替换 dQw4w9WgXcQ 为客户真实的 YouTube ID -->
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
             </div>
             
-            <!-- Etsy Button -->
-            <div class="mt-16 text-center">
-                 <a href="https://your-etsy-shop.etsy.com" target="_blank" class="inline-block px-8 py-3 bg-stone-800 text-stone-100 font-serif text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-stone-600 transition duration-300">
+            <!-- 分享与店铺按钮组 -->
+            <div class="flex flex-col gap-4 w-full px-4">
+                <button onclick="shareMemorial()" class="w-full py-3 bg-emerald-800/10 text-emerald-900 border border-emerald-800/20 font-serif text-xs tracking-widest uppercase rounded flex items-center justify-center gap-2 hover:bg-emerald-800/20">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+                    Share with Family
+                </button>
+                <a href="https://your-etsy-shop.etsy.com" target="_blank" class="w-full text-center py-3 bg-stone-800 text-stone-100 font-serif text-xs tracking-[0.2em] uppercase rounded hover:bg-stone-600 transition">
                     Visit Lucid Sinew
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Lightbox Overlay (Hidden by default) -->
-    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4 sm:p-10 backdrop-blur-sm transition-opacity duration-300" onclick="closeLightbox()">
-        <button class="absolute top-6 right-6 text-white hover:text-stone-400 focus:outline-none z-50 transition-colors">
-            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <img id="lightbox-img" src="" alt="Enlarged view" class="max-w-full max-h-[90vh] object-contain shadow-2xl rounded" onclick="event.stopPropagation()">
+    <!-- 底部悬浮控制栏 (翻页按钮) -->
+    <div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#f4f1ea] via-[#f4f1ea] to-transparent z-40 flex justify-center pb-6">
+        <div class="w-full max-w-md flex justify-between px-6">
+            <button id="btn-prev" onclick="prevPage()" class="opacity-50 hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-600 flex items-center gap-1 disabled:opacity-20">
+                <span>&larr;</span> Prev
+            </button>
+            <div class="font-script text-stone-400 text-lg"><span id="page-indicator">1</span> / 6</div>
+            <button id="btn-next" onclick="nextPage()" class="hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-900 font-semibold flex items-center gap-1">
+                Next <span>&rarr;</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 灯箱遮罩层 -->
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white z-50"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] object-contain shadow-2xl rounded" onclick="event.stopPropagation()">
     </div>
 
     <script>
-        function openLightbox(imageSrc) {
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            lightboxImg.src = imageSrc;
-            lightbox.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        // 翻页逻辑
+        let currentPage = 1;
+        const totalPages = 6;
+
+        function updatePagination() {
+            // 隐藏所有页面，显示当前页面
+            document.querySelectorAll('.album-page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${currentPage}`).classList.add('active');
+            
+            // 更新底部页码
+            document.getElementById('page-indicator').innerText = currentPage;
+            
+            // 更新按钮状态
+            document.getElementById('btn-prev').disabled = currentPage === 1;
+            document.getElementById('btn-next').style.display = currentPage === totalPages ? 'none' : 'flex';
+            
+            // 每次翻页自动滚动到相册顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function nextPage() { if (currentPage < totalPages) { currentPage++; updatePagination(); } }
+        function prevPage() { if (currentPage > 1) { currentPage--; updatePagination(); } }
+
+        // 原生分享功能 (Share API)
+        function shareMemorial() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Oliver\'s Memorial Archive',
+                    text: 'A little book of all the moments we shared.',
+                    url: window.location.href // 自动抓取当前 Vercel 链接
+                }).catch(console.error);
+            } else {
+                // 如果浏览器不支持，提示用户复制链接
+                alert("Please copy the website link from your browser to share with family.");
+            }
+        }
+
+        // 灯箱逻辑
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
         function closeLightbox() {
-            const lightbox = document.getElementById('lightbox');
-            lightbox.classList.add('hidden');
-            document.body.style.overflow = 'auto'; // Restore scrolling
-            // clear src after fade out to avoid ghosting
+            document.getElementById('lightbox').classList.add('hidden');
+            document.body.style.overflow = 'auto';
             setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
         }
         
-        // Close with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !document.getElementById('lightbox').classList.contains('hidden')) {
-                closeLightbox();
-            }
-        });
+        // 初始化状态
+        updatePagination();
     </script>
 </body>
 </html>
