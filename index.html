@@ -71,8 +71,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
-    <!-- 更稳定的公开 CDN 音频源 -->
-    <audio id="bgMusic" loop preload="auto" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=gentle-piano-110603.mp3"></audio>
+    <!-- 优化后的高兼容性音频源 -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://archive.org/download/BeethovenMoonlightSonata-1stMovement/MoonlightSonata.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- 全局页面顶部专属名称与响应式音乐开关 -->
     <div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
@@ -293,7 +295,6 @@
                     isPlaying = true;
                 }).catch(e => {
                     console.log("Audio play blocked or loading:", e);
-                    // 移除烦人的 alert，静默处理以保持高端体验
                 });
             }
         }
