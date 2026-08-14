@@ -7,25 +7,25 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <style>
-    body { background-color: #f4f1ea; font-family: 'Inter', sans-serif; color: #4a4a4a; overflow-x: hidden; }
+    /* 将底板背景加深，拉开与书本的颜色对比度 */
+    body { background-color: #dcd7cb; font-family: 'Inter', sans-serif; color: #4a4a4a; overflow-x: hidden; }
     .font-serif { font-family: 'Playfair Display', serif; }
     .font-script { font-family: 'Caveat', cursive; }
     
-    /* 核心书本容器，适配手机屏幕 */
+    /* 核心书本容器 */
     .book-container {
         background-color: #fdfcf9;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.12), 0 4px 10px rgba(0,0,0,0.05);
         background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
-        min-height: 75vh;
+        min-height: 70vh;
         position: relative;
         overflow: hidden;
     }
     
-    /* 照片样式定义 */
     .polaroid {
         background: white;
         padding: 10px 10px 36px 10px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.08);
         cursor: pointer;
         transition: transform 0.3s ease;
     }
@@ -33,7 +33,7 @@
     
     .taped {
         position: relative;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         cursor: pointer;
         background: white;
         padding: 6px;
@@ -51,51 +51,61 @@
     .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-    /* 翻页逻辑控制 */
-    .album-page { display: none; animation: fadeIn 0.5s ease; }
+    .album-page { display: none; animation: fadeIn 0.4s ease; }
     .album-page.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* 极简线条装饰图层 */
+    .decor-line-art { position: absolute; opacity: 0.15; pointer-events: none; }
 </style>
 </head>
-<body class="min-h-screen flex flex-col items-center pb-24 pt-4 sm:pt-10 px-4">
+<body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
     <!-- 主相册区域 -->
     <div class="w-full max-w-md book-container rounded-md flex flex-col justify-center p-8 z-10 border border-stone-200/50">
         
         <!-- Page 1: 封面 -->
-        <div id="page-1" class="album-page active flex-col items-center justify-center text-center">
-            <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-md mb-8" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
+        <div id="page-1" class="album-page active flex-col items-center justify-center text-center relative h-full">
+            <!-- 极简树叶装饰 -->
+            <svg class="decor-line-art top-4 left-4 w-12 h-12 text-stone-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm0 0v8m0 0l-3-3m3 3l3-3"></path></svg>
+            
+            <div class="w-48 h-48 rounded-full overflow-hidden border-4 border-white shadow-md mb-8 relative z-10" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
                 <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80" class="w-full h-full object-cover">
             </div>
             <h1 class="font-script text-6xl text-amber-900 mb-2">Oliver</h1>
             <p class="font-serif text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-6">In Loving Memory</p>
-            <svg class="w-6 h-6 mx-auto text-amber-800/30 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <p class="font-serif italic text-stone-500 text-sm">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
+            <svg class="w-5 h-5 mx-auto text-amber-800/40 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            <p class="font-serif italic text-stone-500 text-sm leading-relaxed">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
         </div>
 
         <!-- Page 2: 两张小照片错落 -->
         <div id="page-2" class="album-page flex-col h-full relative py-6">
-            <h2 class="font-script text-4xl text-emerald-800/70 mb-4 transform -rotate-2">Little Man...</h2>
+            <h2 class="font-script text-4xl text-emerald-800/70 mb-4 transform -rotate-2">Our precious little man...</h2>
             
             <div class="relative w-full h-80 mt-4">
-                <div class="absolute top-0 left-0 w-44 polaroid transform -rotate-3 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
+                <div class="absolute top-0 left-0 w-44 polaroid transform -rotate-3 z-20" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
                     <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
-                    <p class="font-script text-xl text-center mt-2 text-stone-600">The day you came home</p>
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">You are the love of our family</p>
                 </div>
                 
-                <div class="absolute bottom-0 right-0 w-40 polaroid transform rotate-4 z-20" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
+                <!-- 极简爪印装饰 -->
+                <svg class="decor-line-art bottom-16 left-4 w-10 h-10 text-stone-800 transform rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM9 5.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM17.5 10a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 10a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM12 20a4.5 4.5 0 01-4.5-4.5c0-2 1.5-4.5 4.5-4.5s4.5 2.5 4.5 4.5A4.5 4.5 0 0112 20z"></path></svg>
+
+                <div class="absolute bottom-0 right-0 w-40 polaroid transform rotate-4 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
                     <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
-                    <p class="font-script text-xl text-center mt-2 text-stone-600">Muddy paws</p>
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">Forever loved</p>
                 </div>
             </div>
         </div>
 
         <!-- Page 3: 一张大图特写 -->
-        <div id="page-3" class="album-page flex-col h-full justify-center items-center py-6">
-            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Baby, I'm amazed</h2>
-            <div class="w-full taped transform -rotate-1" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
+        <div id="page-3" class="album-page flex-col h-full justify-center items-center py-6 relative">
+            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Always in our hearts</h2>
+            <div class="w-full taped transform -rotate-1 relative z-10" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
                 <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80" class="w-full h-64 object-cover">
             </div>
+            <!-- 背景草/蒲公英装饰 -->
+            <svg class="decor-line-art bottom-2 right-2 w-16 h-16 text-stone-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 22V10m0 0l3-3m-3 3l-3-3m3 3l5-5m-5 5l-5-5"></path></svg>
         </div>
 
         <!-- Page 4: 另外两张小照片错落 -->
@@ -104,19 +114,20 @@
                 <div class="absolute top-4 right-0 w-40 taped transform rotate-2 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1552053831-71594a27632d')">
                     <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
                 </div>
-                <h2 class="absolute top-40 left-2 font-script text-3xl text-amber-900/60 transform -rotate-6 z-0">Sunbeam naps...</h2>
+                <h2 class="absolute top-40 left-2 font-script text-3xl text-amber-900/60 transform -rotate-6 z-0">Endless love and<br>sweet memories...</h2>
                 
                 <div class="absolute bottom-0 left-4 w-44 polaroid transform -rotate-4 z-20" onclick="openLightbox('https://images.unsplash.com/photo-1537151608804-ea6f117f7396')">
                     <img src="https://images.unsplash.com/photo-1537151608804-ea6f117f7396?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover">
-                    <p class="font-script text-xl text-center mt-2 text-stone-600">Your favorite toy</p>
+                    <p class="font-script text-xl text-center mt-2 text-stone-600">Deeply missed</p>
                 </div>
             </div>
         </div>
 
         <!-- Page 5: 第二张大图特写 -->
-        <div id="page-5" class="album-page flex-col h-full justify-center items-center py-6">
-            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">Always by my side</h2>
-            <div class="w-full taped transform rotate-1" onclick="openLightbox('https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24')">
+        <div id="page-5" class="album-page flex-col h-full justify-center items-center py-6 relative">
+            <svg class="decor-line-art top-4 right-4 w-10 h-10 text-stone-800 transform rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+            <h2 class="font-serif italic text-xl text-stone-400 mb-6 text-center">A lifetime of love</h2>
+            <div class="w-full taped transform rotate-1 z-10" onclick="openLightbox('https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24')">
                 <img src="https://images.unsplash.com/photo-1516629232371-d8ec7ffdfb24?auto=format&fit=crop&w=600&q=80" class="w-full h-64 object-cover">
             </div>
         </div>
@@ -125,35 +136,33 @@
         <div id="page-6" class="album-page flex-col justify-center items-center py-6">
             <h2 class="font-script text-4xl text-stone-600 text-center mb-8">Forever in our hearts</h2>
             
-            <div class="w-full video-container shadow-md border-4 border-white mb-8">
+            <div class="w-full video-container shadow-md border-4 border-white mb-10">
                 <!-- 替换 dQw4w9WgXcQ 为客户真实的 YouTube ID -->
                 <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" frameborder="0" allowfullscreen></iframe>
             </div>
             
             <!-- 分享与店铺按钮组 -->
-            <div class="flex flex-col gap-4 w-full px-4">
-                <button onclick="shareMemorial()" class="w-full py-3 bg-emerald-800/10 text-emerald-900 border border-emerald-800/20 font-serif text-xs tracking-widest uppercase rounded flex items-center justify-center gap-2 hover:bg-emerald-800/20">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            <div class="flex flex-col gap-4 w-full px-2">
+                <button onclick="shareMemorial()" class="w-full py-3.5 bg-transparent border border-amber-900/30 text-amber-900 font-serif text-xs tracking-widest uppercase rounded flex items-center justify-center gap-2 hover:bg-amber-900/5 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
                     Share with Family
                 </button>
-                <a href="https://your-etsy-shop.etsy.com" target="_blank" class="w-full text-center py-3 bg-stone-800 text-stone-100 font-serif text-xs tracking-[0.2em] uppercase rounded hover:bg-stone-600 transition">
+                <a href="https://your-etsy-shop.etsy.com" target="_blank" class="w-full text-center py-3.5 bg-stone-800 text-stone-100 font-serif text-xs tracking-[0.2em] uppercase rounded hover:bg-stone-600 transition shadow-sm">
                     Visit Lucid Sinew
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- 底部悬浮控制栏 (翻页按钮) -->
-    <div class="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-[#f4f1ea] via-[#f4f1ea] to-transparent z-40 flex justify-center pb-6">
-        <div class="w-full max-w-md flex justify-between px-6">
-            <button id="btn-prev" onclick="prevPage()" class="opacity-50 hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-600 flex items-center gap-1 disabled:opacity-20">
-                <span>&larr;</span> Prev
-            </button>
-            <div class="font-script text-stone-400 text-lg"><span id="page-indicator">1</span> / 6</div>
-            <button id="btn-next" onclick="nextPage()" class="hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-900 font-semibold flex items-center gap-1">
-                Next <span>&rarr;</span>
-            </button>
-        </div>
+    <!-- 紧贴书本的翻页控制栏 -->
+    <div class="w-full max-w-md flex justify-between items-center px-4 mt-6 z-20">
+        <button id="btn-prev" onclick="prevPage()" class="opacity-50 hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-500 flex items-center gap-1 disabled:opacity-20 px-2 py-2">
+            <span>&larr;</span> Prev
+        </button>
+        <div class="font-script text-stone-400 text-xl"><span id="page-indicator">1</span> / 6</div>
+        <button id="btn-next" onclick="nextPage()" class="hover:opacity-100 transition font-serif text-sm tracking-widest uppercase text-stone-800 font-semibold flex items-center gap-1 px-2 py-2">
+            Next <span>&rarr;</span>
+        </button>
     </div>
 
     <!-- 灯箱遮罩层 -->
@@ -163,44 +172,33 @@
     </div>
 
     <script>
-        // 翻页逻辑
         let currentPage = 1;
         const totalPages = 6;
 
         function updatePagination() {
-            // 隐藏所有页面，显示当前页面
             document.querySelectorAll('.album-page').forEach(page => page.classList.remove('active'));
             document.getElementById(`page-${currentPage}`).classList.add('active');
-            
-            // 更新底部页码
             document.getElementById('page-indicator').innerText = currentPage;
-            
-            // 更新按钮状态
             document.getElementById('btn-prev').disabled = currentPage === 1;
-            document.getElementById('btn-next').style.display = currentPage === totalPages ? 'none' : 'flex';
-            
-            // 每次翻页自动滚动到相册顶部
+            document.getElementById('btn-next').style.visibility = currentPage === totalPages ? 'hidden' : 'visible';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function nextPage() { if (currentPage < totalPages) { currentPage++; updatePagination(); } }
         function prevPage() { if (currentPage > 1) { currentPage--; updatePagination(); } }
 
-        // 原生分享功能 (Share API)
         function shareMemorial() {
             if (navigator.share) {
                 navigator.share({
                     title: 'Oliver\'s Memorial Archive',
                     text: 'A little book of all the moments we shared.',
-                    url: window.location.href // 自动抓取当前 Vercel 链接
+                    url: window.location.href 
                 }).catch(console.error);
             } else {
-                // 如果浏览器不支持，提示用户复制链接
                 alert("Please copy the website link from your browser to share with family.");
             }
         }
 
-        // 灯箱逻辑
         function openLightbox(src) {
             document.getElementById('lightbox-img').src = src;
             document.getElementById('lightbox').classList.remove('hidden');
@@ -212,7 +210,6 @@
             setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
         }
         
-        // 初始化状态
         updatePagination();
     </script>
 </body>
