@@ -71,10 +71,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
-    <!-- 指向你放在 public 文件夹下的高清音乐文件 -->
-    <audio id="bgMusic" loop preload="auto" src="/bg-music.mp3"></audio>
+    <!-- 本地音频源 -->
+    <audio id="bgMusic" preload="auto" src="/bg-music.mp3"></audio>
 
-    <!-- 全局页面顶部专属名称与响应式音乐开关 -->
+    <!-- 全局页面顶部专属名称与音乐开关 -->
     <div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
         <div class="w-16"></div>
         <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase text-center flex-grow">❤ My Love Oliver ❤</h3>
@@ -254,14 +254,9 @@
             document.getElementById('btn-prev').disabled = currentPage === 1;
             document.getElementById('btn-next').style.visibility = currentPage === totalPages ? 'hidden' : 'visible';
             
-            // 翻到最后一页（视频页）时，自动静默关闭音乐
-            if (currentPage === totalPages && isPlaying) {
-                music.pause();
-                musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
-                musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
-                musicText.innerText = 'Music';
-                musicIcon.classList.remove('spin-icon');
-                isPlaying = false;
+            // 翻到最后一页（视频页）时，自动停止音乐
+            if (currentPage === totalPages) {
+                stopMusic();
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -274,27 +269,65 @@
         const musicBtn = document.getElementById('music-btn');
         const musicText = document.getElementById('music-text');
         const musicIcon = document.getElementById('music-icon');
-        let isPlaying = false;
+        
+        let fadeInterval = null;
+        let stopTimeout = null;
 
         function toggleMusic() {
-            if (isPlaying) {
-                music.pause();
-                musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
-                musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
-                musicText.innerText = 'Music';
-                musicIcon.classList.remove('spin-icon');
-                isPlaying = false;
-            } else {
-                music.play().then(() => {
-                    musicBtn.classList.remove('bg-white/80', 'text-stone-600', 'border-stone-200/80');
-                    musicBtn.classList.add('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
-                    musicText.innerText = 'Playing';
-                    musicIcon.classList.add('spin-icon');
-                    isPlaying = true;
-                }).catch(e => {
-                    console.log("Audio play error:", e);
-                });
-            }
+            // 清除之前的定时器，防止冲突
+            if (fadeInterval) clearInterval(fadeInterval);
+            if (stopTimeout) clearTimeout(stopTimeout);
+
+            music.pause();
+            music.currentTime = 0;
+            music.volume = 1.0;
+
+            music.play().then(() => {
+                musicBtn.classList.remove('bg-white/80', 'text-stone-600', 'border-stone-200/80');
+                musicBtn.classList.add('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
+                musicText.innerText = 'Playing';
+                musicIcon.classList.add('spin-icon');
+
+                // 播放 17 秒后开始渐隐（总共 20 秒：17秒播放 + 3秒淡出）
+                stopTimeout = setTimeout(() => {
+                    startFadeOut();
+                }, 17000);
+
+            }).catch(e => {
+                console.log("Audio play error:", e);
+            });
+        }
+
+        function startFadeOut() {
+            let fadeSteps = 30; // 渐隐步数
+            let currentStep = 0;
+            let initialVolume = music.volume;
+
+            fadeInterval = setInterval(() => {
+                currentStep++;
+                music.volume = Math.max(0, initialVolume * (1 - currentStep / fadeSteps));
+                
+                if (currentStep >= fadeSteps || music.volume <= 0) {
+                    clearInterval(fadeInterval);
+                    stopMusic();
+                }
+            }, 100); // 每 100 毫秒降一次音量
+        }
+
+        function stopMusic() {
+            if (fadeInterval) clearInterval(fadeInterval);
+            if (stopTimeout) clearTimeout(stopTimeout);
+            music.pause();
+            music.currentTime = 0;
+            music.volume = 1.0;
+            resetButtonState();
+        }
+
+        function resetButtonState() {
+            musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
+            musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
+            musicText.innerText = 'Music';
+            musicIcon.classList.remove('spin-icon');
         }
 
         function shareMemorial() {
