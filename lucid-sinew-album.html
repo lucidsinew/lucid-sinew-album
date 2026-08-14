@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pet Memorial Album - Lucid Sinew</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+    body { background-color: #f4f1ea; font-family: 'Inter', sans-serif; color: #4a4a4a; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    .font-script { font-family: 'Caveat', cursive; }
+    
+    .book-container {
+        background-color: #fdfcf9;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+        background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+    }
+    
+    .spine {
+        background: linear-gradient(to right, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.08) 50%, rgba(0,0,0,0.02) 100%);
+    }
+    
+    .polaroid {
+        background: white;
+        padding: 12px 12px 48px 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+    .polaroid:hover { transform: scale(1.03) rotate(0deg) !important; z-index: 20; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+    
+    .taped {
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .taped:hover { transform: scale(1.03) rotate(0deg) !important; z-index: 20; box-shadow: 0 10px 15px rgba(0,0,0,0.15); }
+    .taped::before {
+        content: '';
+        position: absolute;
+        top: -12px; left: 50%; transform: translateX(-50%) rotate(-2deg);
+        width: 90px; height: 28px;
+        background-color: rgba(245, 240, 220, 0.85);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        z-index: 2;
+    }
+    
+    .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
+    .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 0.25rem; }
+</style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-8">
+    
+    <!-- SPREAD 1 (Cover & First Photos) -->
+    <div class="max-w-5xl mx-auto book-container rounded-sm relative flex flex-col md:flex-row overflow-hidden">
+        <!-- Mobile Separator -->
+        <div class="md:hidden w-full h-1 bg-stone-200"></div>
+        <!-- Center Spine -->
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-10 -ml-5 spine z-0"></div>
+
+        <!-- COVER PAGE (Left Page) -->
+        <div class="w-full md:w-1/2 p-10 sm:p-16 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-stone-200/60 z-10">
+            <div class="w-56 h-56 rounded-full overflow-hidden border-4 border-white shadow-lg mb-8 cursor-pointer transition-transform hover:scale-105" onclick="openLightbox('https://images.unsplash.com/photo-1543466835-00a7907e9de1')">
+                <!-- Cover Pet Image -->
+                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80" alt="Pet Cover" class="w-full h-full object-cover">
+            </div>
+            <!-- Pet Name -->
+            <h1 class="font-script text-7xl text-amber-900 mb-2">Oliver</h1>
+            <p class="font-serif text-xs uppercase tracking-[0.3em] text-stone-400 mb-6">In Loving Memory</p>
+            
+            <div class="text-center opacity-75 mt-4">
+                <svg class="w-6 h-6 mx-auto text-amber-800/30 mb-3" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <p class="font-serif italic text-stone-500 text-sm">A little book of all the moments, the mischief,<br>and the love we were lucky to share.</p>
+            </div>
+        </div>
+
+        <!-- RIGHT PAGE (First Memory) -->
+        <div class="w-full md:w-1/2 p-10 sm:p-16 z-10 relative flex flex-col">
+            <h2 class="font-script text-4xl text-emerald-800/70 mb-12 transform -rotate-2">Little Man...</h2>
+            
+            <div class="relative flex-grow">
+                <!-- Photo 1 (Polaroid) -->
+                <div class="absolute top-0 left-0 w-48 sm:w-56 polaroid transform -rotate-3" onclick="openLightbox('https://images.unsplash.com/photo-1517849845537-4d257902454a')">
+                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=500&q=80" alt="Memory 1" class="w-full h-40 sm:h-48 object-cover">
+                    <p class="font-script text-2xl text-center mt-3 text-stone-600">The day you came home</p>
+                </div>
+                
+                <!-- Photo 2 (Taped) -->
+                <div class="absolute bottom-10 right-0 w-40 sm:w-48 taped transform rotate-4" onclick="openLightbox('https://images.unsplash.com/photo-1583511655857-d19b40a7a54e')">
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=400&q=80" alt="Memory 2" class="w-full h-40 object-cover border-4 border-white">
+                    <p class="font-script text-2xl text-amber-800/60 absolute -bottom-8 -right-4 transform -rotate-6">Muddy paws</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPREAD 2 (More Memories & Video) -->
+    <div class="max-w-5xl mx-auto book-container rounded-sm relative flex flex-col md:flex-row overflow-hidden mt-8">
+        <div class="md:hidden w-full h-1 bg-stone-200"></div>
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-10 -ml-5 spine z-0"></div>
+
+        <!-- LEFT PAGE -->
+        <div class="w-full md:w-1/2 p-10 sm:p-16 z-10 border-b md:border-b-0 md:border-r border-stone-200/60">
+            <h2 class="font-serif italic text-2xl text-stone-400 mb-8 text-center">Baby, I'm amazed</h2>
+            
+            <!-- Photo 3 (Full bleed taped) -->
+            <div class="w-full taped transform -rotate-1 mb-10" onclick="openLightbox('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba')">
+                <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80" alt="Memory 3" class="w-full h-56 object-cover border-8 border-white">
+            </div>
+            
+            <div class="flex justify-between items-center px-2">
+                <!-- Photo 4 (Small Polaroid) -->
+                <div class="w-32 polaroid transform rotate-3" onclick="openLightbox('https://images.unsplash.com/photo-1552053831-71594a27632d')">
+                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=300&q=80" alt="Memory 4" class="w-full h-24 object-cover">
+                </div>
+                <p class="font-script text-4xl text-amber-900/60 transform -rotate-6 pr-4">Sunbeam naps</p>
+            </div>
+        </div>
+
+        <!-- RIGHT PAGE (Final Video) -->
+        <div class="w-full md:w-1/2 p-10 sm:p-16 flex flex-col justify-center z-10">
+            <h2 class="font-script text-5xl text-stone-600 text-center mb-10">Forever in our hearts</h2>
+            
+            <!-- Video Player (Replace dQw4w9WgXcQ with your video ID) -->
+            <div class="video-container shadow-xl bg-stone-900 rounded border-8 border-white transform rotate-1">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1" title="Memorial Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
+            <!-- Etsy Button -->
+            <div class="mt-16 text-center">
+                 <a href="https://your-etsy-shop.etsy.com" target="_blank" class="inline-block px-8 py-3 bg-stone-800 text-stone-100 font-serif text-xs tracking-[0.2em] uppercase rounded-sm hover:bg-stone-600 transition duration-300">
+                    Visit Lucid Sinew
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Overlay (Hidden by default) -->
+    <div id="lightbox" class="fixed inset-0 z-50 hidden bg-black/95 flex items-center justify-center p-4 sm:p-10 backdrop-blur-sm transition-opacity duration-300" onclick="closeLightbox()">
+        <button class="absolute top-6 right-6 text-white hover:text-stone-400 focus:outline-none z-50 transition-colors">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="lightbox-img" src="" alt="Enlarged view" class="max-w-full max-h-[90vh] object-contain shadow-2xl rounded" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+        function openLightbox(imageSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = imageSrc;
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restore scrolling
+            // clear src after fade out to avoid ghosting
+            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
+        }
+        
+        // Close with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !document.getElementById('lightbox').classList.contains('hidden')) {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
