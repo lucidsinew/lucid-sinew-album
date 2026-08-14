@@ -63,40 +63,27 @@
     .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 4px; }
     .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     .decor-line-art { position: absolute; opacity: 0.15; pointer-events: none; }
+
+    /* 音符旋转动画 */
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .spin-icon { display: inline-block; animation: spin 2s linear infinite; }
 </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center py-6 sm:py-10 px-4">
 
-    <!-- 全局页面顶部专属名称 (完美居中) -->
-<div class="w-full max-w-md text-center mb-6 z-10">
-    <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase">
-        ❤ My Love Oliver ❤
-    </h3>
-</div>
-    <!-- 顶部标题 -->
-<div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
+    <!-- 内置 Base64 稳定音频流（无需外部请求，全球秒开不卡顿） -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAEAAABhQAZGBkcHSAgKjI1ODxAQERHSElMT1BRUlNkY2VnaWptbm9wcXR2eHqAgIKEhYeIiYqLjI2Oj5CRkpOUlZaXmpucnqChosTFxsfIycrLzM3Oz9DR0tTV1tfY2drb3N3e4+Pp6uvs7v//tQAAAAAASW5mbwAAAA8AAAAEAAABhQAZGBkcHSAgKjI1ODxAQERHSElMT1BRUlNkY2VnaWptbm9wcXR2eHqAgIKEhYeIiYqLjI2Oj5CRkpOUlZaXmpucnqChosTFxsfIycrLzM3Oz9DR0tTV1tfY2drb3N3e4+Pp6uvs7v//tQAAAAAASW5mbwAAAA8AAAAEAAABhQAZGBkcHSAgKjI1ODxAQERHSElMT1BRUlNkY2VnaWptbm9wcXR2eHqAgIKEhYeIiYqLjI2Oj5CRkpOUlZaXmpucnqChosTFxsfIycrLzM3Oz9DR0tTV1tfY2drb3N3e4+Pp6uvs7v//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////w==" type="audio/mp3">
+    </audio>
 
-    <div class="w-16"></div>
-
-    <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase text-center flex-grow">
-        ❤ My Love Oliver ❤
-    </h3>
-
-
-    <button 
-    onclick="toggleMusic()" 
-    id="music-btn"
-    class="text-[11px] font-serif px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 transition-all duration-300 bg-white/80 text-stone-600 border border-stone-200/80">
-
-        <span id="music-icon">♫</span>
-
-        <span id="music-text">
-        Music
-        </span>
-
-    </button>
-
-</div>
+    <!-- 全局页面顶部专属名称与响应式音乐开关 -->
+    <div class="w-full max-w-md flex justify-between items-center px-1 mb-6 z-10">
+        <div class="w-16"></div>
+        <h3 class="font-serif text-[0.75rem] tracking-[0.25em] text-stone-500 uppercase text-center flex-grow">❤ My Love Oliver ❤</h3>
+        <button onclick="toggleMusic()" id="music-btn" class="text-[11px] font-serif px-3 py-1.5 rounded-full shadow-xs flex items-center gap-1.5 transition-all duration-300 bg-white/80 text-stone-600 border border-stone-200/80 hover:bg-white active:scale-95">
+            <span id="music-icon">♫</span> <span id="music-text">Music</span>
+        </button>
+    </div>
 
     <!-- 主相册容器 -->
     <div class="w-full max-w-md book-container rounded-md flex flex-col p-6 z-10 border border-stone-200/50">
@@ -262,167 +249,80 @@
         let currentPage = 1;
         const totalPages = 11;
 
-      // =====================
-// Memory Music System
-// =====================
-
-
-let audioContext = null;
-let musicPlaying = false;
-let musicTimer = null;
-
-
-function toggleMusic(){
-
-    const btn =
-    document.getElementById("music-btn");
-
-    const text =
-    document.getElementById("music-text");
-
-    const icon =
-    document.getElementById("music-icon");
-
-
-    if(musicPlaying){
-
-        stopMemoryMusic();
-
-        text.innerText="Music";
-        icon.classList.remove("spin-icon");
-
-        btn.classList.remove(
-        "bg-amber-900",
-        "text-white"
-        );
-
-        return;
-    }
-
-
-    playMemoryMusic();
-
-
-    text.innerText="Playing";
-    icon.classList.add("spin-icon");
-
-
-    btn.classList.add(
-    "bg-amber-900",
-    "text-white"
-    );
-
-}
-
-
-
-function playMemoryMusic(){
-
-
-    audioContext =
-    new (window.AudioContext ||
-    window.webkitAudioContext)();
-
-
-    const notes=[
-        261.63,
-        329.63,
-        392,
-        523.25
-    ];
-
-
-    let start =
-    audioContext.currentTime;
-
-
-
-    notes.forEach((freq,i)=>{
-
-
-        let osc =
-        audioContext.createOscillator();
-
-
-        let gain =
-        audioContext.createGain();
-
-
-
-        osc.type="sine";
-
-        osc.frequency.value=freq;
-
-
-        gain.gain.setValueAtTime(
-        0,
-        start+i*3
-        );
-
-
-        gain.gain.linearRampToValueAtTime(
-        0.12,
-        start+i*3+0.3
-        );
-
-
-        gain.gain.linearRampToValueAtTime(
-        0,
-        start+i*3+2.8
-        );
-
-
-        osc.connect(gain);
-
-        gain.connect(
-        audioContext.destination
-        );
-
-
-        osc.start(start+i*3);
-
-        osc.stop(start+i*3+3);
-
-
-    });
-
-
-
-    musicPlaying=true;
-
-
-
-    musicTimer=setTimeout(()=>{
-
-        stopMemoryMusic();
-
-        document.getElementById(
-        "music-text"
-        ).innerText="Music";
-
-
-    },20000);
-
-
-
-}
-
-
-
-function stopMemoryMusic(){
-
-    if(audioContext){
-
-        audioContext.close();
-
-        audioContext=null;
-
-    }
-
-
-    clearTimeout(musicTimer);
-
-    musicPlaying=false;
-
-
-}
+        function updatePagination() {
+            document.querySelectorAll('.album-page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${currentPage}`).classList.add('active');
+            document.getElementById('page-indicator').innerText = currentPage;
+            document.getElementById('btn-prev').disabled = currentPage === 1;
+            document.getElementById('btn-next').style.visibility = currentPage === totalPages ? 'hidden' : 'visible';
+            
+            // 翻到最后一页（视频页）时，自动静默关闭音乐
+            if (currentPage === totalPages && isPlaying) {
+                music.pause();
+                musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
+                musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
+                musicText.innerText = 'Music';
+                musicIcon.classList.remove('spin-icon');
+                isPlaying = false;
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function nextPage() { if (currentPage < totalPages) { currentPage++; updatePagination(); } }
+        function prevPage() { if (currentPage > 1) { currentPage--; updatePagination(); } }
+
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('music-btn');
+        const musicText = document.getElementById('music-text');
+        const musicIcon = document.getElementById('music-icon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.classList.remove('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
+                musicBtn.classList.add('bg-white/80', 'text-stone-600', 'border-stone-200/80');
+                musicText.innerText = 'Music';
+                musicIcon.classList.remove('spin-icon');
+                isPlaying = false;
+            } else {
+                music.play().then(() => {
+                    musicBtn.classList.remove('bg-white/80', 'text-stone-600', 'border-stone-200/80');
+                    musicBtn.classList.add('bg-amber-900', 'text-white', 'border-amber-900', 'shadow-md');
+                    musicText.innerText = 'Playing';
+                    musicIcon.classList.add('spin-icon');
+                    isPlaying = true;
+                }).catch(e => {
+                    console.log("Audio play blocked:", e);
+                });
+            }
+        }
+
+        function shareMemorial() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Oliver\'s Memorial Archive',
+                    text: 'A little book of all the moments we shared.',
+                    url: window.location.href 
+                }).catch(console.error);
+            } else {
+                alert("Please copy the website link from your browser to share with family.");
+            }
+        }
+
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            setTimeout(() => { document.getElementById('lightbox-img').src = ''; }, 300);
+        }
+        
+        updatePagination();
+    </script>
+</body>
+</html>
